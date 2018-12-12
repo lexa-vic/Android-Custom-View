@@ -20,10 +20,12 @@
             app:layout_constraintHorizontal_bias="0.5"/>
 
     <com.kostikov.customfancontroller.DialView
+            android:id="@+id/dialView"
             android:layout_width="0dp"
             android:layout_height="200dp"
             app:fanOffColor="@color/gray1"
             app:fanOnColor="@color/cyan1"
+            app:selectorCount="15"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="8dp"

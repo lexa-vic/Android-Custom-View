@@ -30,14 +30,25 @@ class DialView
     private var radius: Float = Float.NaN   // Radius of the circle.
     private var activeSelection: Int = 0    // The active selection.
 
-    private var fanOnColor: Int = Color.GREEN
-    private var fanOffColor: Int = Color.GRAY
-
-
-
     // String buffer for dial labels and float for ComputeXY result.
     private val tempLabel: StringBuffer = StringBuffer(8)
+
     private val tempResult: FloatArray = FloatArray(2)
+
+    // Public properties
+
+    // Dial color when  fan off - position > 0
+    var fanOnColor: Int = Color.GREEN
+
+    // Dial color when fan off - position 0
+    var fanOffColor: Int = Color.GRAY
+
+    // Selector quantity in fan control
+    var selectorCount: Int = SELECTION_COUNT
+    set(value) {
+        field = value
+        invalidate()
+    }
 
     init {
         // Set attrs
@@ -46,6 +57,7 @@ class DialView
 
             fanOnColor = typeArray.getColor(R.styleable.DialView_fanOnColor, fanOnColor)
             fanOffColor = typeArray.getColor(R.styleable.DialView_fanOffColor, fanOffColor)
+            selectorCount = typeArray.getColor(R.styleable.DialView_selectorCount, SELECTION_COUNT)
 
             typeArray.recycle()
         }
@@ -66,7 +78,7 @@ class DialView
 
         setOnClickListener {
             // Rotate selection to the next valid choice.
-            activeSelection = (activeSelection + 1) % SELECTION_COUNT;
+            activeSelection = (activeSelection + 1) % selectorCount;
             // Set dial background color to green if selection is >= 1.
             if (activeSelection >= 1) {
                 dialPaint.color = fanOnColor
@@ -95,7 +107,7 @@ class DialView
         // Draw the text labels.
         val labelRadius = radius + 20
         val label = tempLabel
-        for (i in 0 until SELECTION_COUNT) {
+        for (i in 0 until selectorCount) {
             val xyData = computeXYForPosition(i, labelRadius)
             val x = xyData[0]
             val y = xyData[1]
@@ -113,8 +125,18 @@ class DialView
 
     private fun computeXYForPosition(pos: Int, radius: Float): FloatArray {
         val result = tempResult
-        val startAngle = Math.PI * (9 / 8.0)                            // Angles are in radians.
-        val angle = startAngle + pos * (Math.PI / 4)
+        val startAngle: Double
+        val angle: Double
+        if (selectorCount > SELECTION_COUNT) {
+            val offset = 2*Math.PI / (selectorCount + 1)
+            startAngle = -Math.PI /2        // Angles are in radians.
+            angle = startAngle + pos *offset
+        } else {
+            val offset = Math.PI / (selectorCount + 1)
+            startAngle = offset + Math.PI         // Angles are in radians.
+            angle = startAngle + pos *offset
+        }
+
         result[0] = (radius * Math.cos(angle)).toFloat() + width / 2
         result[1] = (radius * Math.sin(angle)).toFloat() + height / 2
         return result

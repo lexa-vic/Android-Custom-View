@@ -3,5 +3,6 @@
     <declare-styleable name="DialView">
         <attr name="fanOnColor" format="color|reference"/>
         <attr name="fanOffColor" format="color|reference"/>
+        <attr name="selectorCount" format="integer"/>
     </declare-styleable>
 </resources>
