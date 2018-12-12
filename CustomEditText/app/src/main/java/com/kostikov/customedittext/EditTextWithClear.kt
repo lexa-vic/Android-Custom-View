@@ -62,7 +62,14 @@ class EditTextWithClear: AppCompatEditText {
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            this@EditTextWithClear.showClearButton()
+
+            if (s != null) {
+                if (s.isEmpty()) {
+                    this@EditTextWithClear.hideClearButton()
+                } else {
+                    this@EditTextWithClear.showClearButton()
+                }
+            }
         }
     }
 
