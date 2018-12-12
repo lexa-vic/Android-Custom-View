@@ -30,11 +30,26 @@ class DialView
     private var radius: Float = Float.NaN   // Radius of the circle.
     private var activeSelection: Int = 0    // The active selection.
 
+    private var fanOnColor: Int = Color.GREEN
+    private var fanOffColor: Int = Color.GRAY
+
+
+
     // String buffer for dial labels and float for ComputeXY result.
     private val tempLabel: StringBuffer = StringBuffer(8)
     private val tempResult: FloatArray = FloatArray(2)
 
     init {
+        // Set attrs
+        attrs?.let {
+            val typeArray = context.obtainStyledAttributes(attrs, R.styleable.DialView, 0, 0)
+
+            fanOnColor = typeArray.getColor(R.styleable.DialView_fanOnColor, fanOnColor)
+            fanOffColor = typeArray.getColor(R.styleable.DialView_fanOffColor, fanOffColor)
+
+            typeArray.recycle()
+        }
+
         textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
             style = Paint.Style.FILL_AND_STROKE
@@ -43,21 +58,20 @@ class DialView
         }
 
         dialPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.GRAY
+            color = fanOffColor
         }
 
         // Initialize current selection.
         activeSelection = 0
 
-        // TODO: Set up onClick listener for this view.
         setOnClickListener {
             // Rotate selection to the next valid choice.
             activeSelection = (activeSelection + 1) % SELECTION_COUNT;
             // Set dial background color to green if selection is >= 1.
             if (activeSelection >= 1) {
-                dialPaint.color = Color.GREEN
+                dialPaint.color = fanOnColor
             } else {
-                dialPaint.color = Color.GRAY
+                dialPaint.color = fanOffColor
             }
             // Redraw the view.
             invalidate();
