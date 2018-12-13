@@ -99,6 +99,14 @@ class DialView
         radius = ((Math.min(width, height) / 2) * 0.8).toFloat()
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        val minSide = Math.min(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
+
+        setMeasuredDimension(minSide, minSide)
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas);
         // Draw the dial.
